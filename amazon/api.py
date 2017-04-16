@@ -658,6 +658,27 @@ class AmazonBrowseNode(LXMLWrapper):
             children.append(AmazonBrowseNode(child))
         return children
 
+    @property
+    def top_sellers(self):
+        """This browse node's top sellers in the browse node tree.
+
+    :return:
+    A list of this browse node's top sellers in the browse node tree.
+    """
+        top_sellers = []
+        top_seller_nodes = getattr(self.parsed_response, 'TopSellers')
+        for top_seller in getattr(top_seller_nodes, 'TopSeller', []):
+            top_sellers.append(TopSeller(top_seller))
+        return top_sellers
+
+class TopSeller(LXMLWrapper):
+    @property
+    def asin(self):
+        return self._safe_get_element_text('ASIN')
+
+    @property
+    def title(self):
+        return self._safe_get_element_text('Title')
 
 class AmazonProduct(LXMLWrapper):
     """A wrapper class for an Amazon product.
